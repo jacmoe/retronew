@@ -39,6 +39,8 @@ private:
 	int direction = 3;
 	int visibility = 4;
 
+	olc::Sprite* sprBackground = nullptr;
+
 	void DrawMaze()
 	{
 		struct xy block, lblock, rblock;
@@ -224,12 +226,17 @@ public:
 public:
 	bool OnUserCreate() override
 	{
+		sprBackground = new olc::Sprite("../../assets/textures/background.png");
+		olc::Pixel::Mode currentPixelMode = GetPixelMode();
+		SetPixelMode(olc::Pixel::ALPHA);
+		DrawSprite(0, 0, sprBackground);
+		SetPixelMode(currentPixelMode);
+		DrawMaze();
 		return true;
 	}
 
 	bool OnUserUpdate(float fElapsedTime) override
 	{
-		DrawMaze();
 		return true;
 	}
 };

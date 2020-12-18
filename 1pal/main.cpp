@@ -26,28 +26,30 @@ public:
 public:
 	bool OnUserCreate() override
 	{
+		Clear(olc::BLUE);
 		pal_offset = (ScreenWidth() / 5) / 2;
 		pal_width = (ScreenWidth() - (pal_offset * 2)) / 4;
 		pal_height = (ScreenHeight() - (pal_offset * 2)) / 4;
-		return true;
-	}
 
-	bool OnUserUpdate(float fElapsedTime) override
-	{
 		// Draw a palette
 		int col = 0;
 		int row = pal_offset;
-		for(int buf = 0; buf < 16; buf++)
+		for (int buf = 0; buf < 16; buf++)
 		{
-			FillRect(pal_offset + (pal_width * col), row, pal_width, pal_height, olc::Pixel(GETR(c64_palette[buf]),GETG(c64_palette[buf]),GETB(c64_palette[buf])));
+			FillRect(pal_offset + (pal_width * col), row, pal_width, pal_height, olc::Pixel(GETR(c64_palette[buf]), GETG(c64_palette[buf]), GETB(c64_palette[buf])));
 			col++;
-			if(col % 4 == 0)
+			if (col % 4 == 0)
 			{
 				col = 0;
 				row += pal_height;
 			}
 		}
 
+		return true;
+	}
+
+	bool OnUserUpdate(float fElapsedTime) override
+	{
 		return true;
 	}
 };
