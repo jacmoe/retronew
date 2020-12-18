@@ -10,7 +10,7 @@ uint32_t c64_palette[16] = {
 #define GETG(c) (((c) >> 8) & 0xFF)
 #define GETB(c) (((c) >> 16) & 0xFF)
 
-class Example : public olc::PixelGameEngine
+class PaletteDemo : public olc::PixelGameEngine
 {
 private:
 	int pal_offset;
@@ -18,7 +18,7 @@ private:
 	int pal_height;
 
 public:
-	Example()
+	PaletteDemo()
 	{
 		sAppName = "Palette";
 	}
@@ -55,7 +55,7 @@ public:
 
 int main()
 {
-	Example demo;
+	PaletteDemo demo;
 	if (demo.Construct(320, 240, 4, 4))
 		demo.Start();
 

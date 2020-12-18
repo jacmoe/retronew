@@ -1,4 +1,4 @@
-set(TARGET_NAME pal)
+set(TARGET_NAME wiremaze)
 
 set(Sources
     ./main.cpp

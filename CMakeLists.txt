@@ -36,3 +36,4 @@ endif (WIN32)
 
 
 add_subdirectory(1pal)
+add_subdirectory(2maze)
