@@ -1,8 +1,11 @@
 /build
 /vsbuild
+/kdevbuild
+/.kdev4
 test_package/build
 /.vscode
 *.user
+*.kdev4
 
 # Object files
 *.o
