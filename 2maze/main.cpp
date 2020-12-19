@@ -23,7 +23,7 @@ char maze[16][16] = {
 	{1, 1, 1, 1,    1, 1, 1, 1,    1, 1, 1, 1,    1, 1, 1, 1}
 };
 
-typedef struct xy {
+struct xy {
 	int x, y;
 };
 
@@ -44,7 +44,6 @@ private:
 	void DrawMaze()
 	{
 		struct xy block, lblock, rblock;
-		int oldleft, oldright;
 
 		// Draw the maze at each distance allowed by visibility
 		for (int dist = 0; dist < visibility; dist++)

@@ -1,4 +1,4 @@
-set(TARGET_NAME move)
+set(TARGET_NAME wiremazemove)
 
 set(Sources
     ./main.cpp

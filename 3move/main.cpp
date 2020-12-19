@@ -23,7 +23,7 @@ char maze[16][16] = {
 	{1, 1, 1, 1,    1, 1, 1, 1,    1, 1, 1, 1,    1, 1, 1, 1}
 };
 
-typedef struct xy {
+struct xy {
 	int x, y;
 };
 
@@ -38,13 +38,14 @@ class WiremoveDemo : public olc::PixelGameEngine
 private:
 	int direction = 3;
 	int visibility = 4;
+	float fTargetFrameTime = 1.0f / 100.0f; // Virtual FPS of 100fps
+	float fAccumulatedTime = 0.0f;
 
 	olc::Sprite* sprBackground = nullptr;
 
-	void DrawMaze()
+	bool DrawMaze()
 	{
 		struct xy block, lblock, rblock;
-		int oldleft, oldright;
 
 		// Draw the maze at each distance allowed by visibility
 		for (int dist = 0; dist < visibility; dist++)
@@ -215,6 +216,12 @@ private:
 			// If view is obscured by wall, stop drawing
 			if (maze[block.x][block.y]) break;
 		}
+		return true;
+	}
+
+	bool HandleInput(float fElapsedTime)
+	{
+		return true;
 	}
 
 public:
@@ -239,6 +246,20 @@ public:
 
 	bool OnUserUpdate(float fElapsedTime) override
 	{
+		fAccumulatedTime += fElapsedTime;
+		if (fAccumulatedTime >= fTargetFrameTime)
+		{
+			fAccumulatedTime -= fTargetFrameTime;
+			fElapsedTime = fTargetFrameTime;
+			if (HandleInput(fElapsedTime))
+			{
+				return DrawMaze();
+			}
+		}
+		else {
+			return true;
+		}
+		// we should never be here
 		return true;
 	}
 };
