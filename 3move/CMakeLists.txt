@@ -1,11 +1,13 @@
-set(TARGET_NAME pal)
+set(TARGET_NAME move)
 
 set(Sources
     ./main.cpp
+    ../common/src/utils.cpp
 )
 
 set(Includes
     ../${IncludeDir}/olcPixelGameEngine.h
+    ../${IncludeDir}/utils.h
 )
 
 add_executable(${TARGET_NAME}

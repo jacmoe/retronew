@@ -4,5 +4,10 @@
 			"path": "."
 		}
 	],
-	"settings": {}
+	"settings": {
+		"files.associations": {
+			"filesystem": "cpp",
+			"fstream": "cpp"
+		}
+	}
 }

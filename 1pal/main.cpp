@@ -10,7 +10,7 @@ uint32_t c64_palette[16] = {
 #define GETG(c) (((c) >> 8) & 0xFF)
 #define GETB(c) (((c) >> 16) & 0xFF)
 
-class Example : public olc::PixelGameEngine
+class PaletteDemo : public olc::PixelGameEngine
 {
 private:
 	int pal_offset;
@@ -18,7 +18,7 @@ private:
 	int pal_height;
 
 public:
-	Example()
+	PaletteDemo()
 	{
 		sAppName = "Palette";
 	}
@@ -26,22 +26,19 @@ public:
 public:
 	bool OnUserCreate() override
 	{
+		Clear(olc::BLUE);
 		pal_offset = (ScreenWidth() / 5) / 2;
 		pal_width = (ScreenWidth() - (pal_offset * 2)) / 4;
 		pal_height = (ScreenHeight() - (pal_offset * 2)) / 4;
-		return true;
-	}
 
-	bool OnUserUpdate(float fElapsedTime) override
-	{
 		// Draw a palette
 		int col = 0;
 		int row = pal_offset;
-		for(int buf = 0; buf < 16; buf++)
+		for (int buf = 0; buf < 16; buf++)
 		{
-			FillRect(pal_offset + (pal_width * col), row, pal_width, pal_height, olc::Pixel(GETR(c64_palette[buf]),GETG(c64_palette[buf]),GETB(c64_palette[buf])));
+			FillRect(pal_offset + (pal_width * col), row, pal_width, pal_height, olc::Pixel(GETR(c64_palette[buf]), GETG(c64_palette[buf]), GETB(c64_palette[buf])));
 			col++;
-			if(col % 4 == 0)
+			if (col % 4 == 0)
 			{
 				col = 0;
 				row += pal_height;
@@ -50,12 +47,17 @@ public:
 
 		return true;
 	}
+
+	bool OnUserUpdate(float fElapsedTime) override
+	{
+		return true;
+	}
 };
 
 
 int main()
 {
-	Example demo;
+	PaletteDemo demo;
 	if (demo.Construct(320, 240, 4, 4))
 		demo.Start();
 
