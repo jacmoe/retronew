@@ -1,26 +1,24 @@
 #define OLC_PGE_APPLICATION
 #include "olcPixelGameEngine.h"
+#include "utils.h"
 
 char maze[16][16] = {
-	{1, 1, 1, 1,    1, 1, 1, 1,    1, 1, 1, 1,    1, 1, 1, 1},
-	{1, 0, 0, 0,    0, 0, 0, 0,    0, 0, 0, 0,    0, 0, 0, 1},
-	{1, 0, 1, 0,    1, 1, 1, 0,    0, 0, 0, 0,    1, 1, 0, 1},
-	{1, 0, 1, 0,    1, 0, 1, 0,    1, 1, 1, 0,    1, 1, 0, 1},
-
-	{1, 0, 1, 0,    1, 0, 1, 0,    0, 0, 1, 0,    0, 1, 0, 1},
-	{1, 0, 1, 1,    1, 0, 1, 0,    1, 0, 1, 1,    1, 1, 0, 1},
-	{1, 0, 0, 0,    0, 0, 0, 0,    1, 0, 0, 0,    0, 0, 0, 1},
-	{1, 0, 1, 1,    1, 0, 1, 0,    1, 1, 1, 0,    1, 1, 0, 1},
-
-	{1, 0, 1, 0,    0, 0, 1, 0,    0, 0, 1, 0,    1, 1, 0, 1},
-	{1, 0, 1, 0,    1, 0, 1, 1,    1, 1, 1, 0,    1, 1, 0, 1},
-	{1, 0, 1, 0,    1, 0, 0, 0,    0, 0, 0, 0,    0, 0, 0, 1},
-	{1, 0, 1, 1,    1, 0, 1, 0,    1, 0, 1, 1,    1, 1, 0, 1},
-
-	{1, 0, 0, 0,    1, 0, 1, 0,    1, 0, 0, 0,    0, 1, 0, 1},
-	{1, 0, 1, 1,    1, 0, 1, 1,    1, 1, 1, 1,    1, 1, 0, 1},
-	{1, 0, 0, 0,    0, 0, 0, 0,    0, 0, 0, 0,    0, 0, 0, 1},
-	{1, 1, 1, 1,    1, 1, 1, 1,    1, 1, 1, 1,    1, 1, 1, 1}
+	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+	{1,0,1,0,1,1,1,0,1,0,1,0,1,1,0,1},
+	{1,0,1,0,1,0,0,0,1,1,1,0,1,1,0,1},
+	{1,0,1,0,0,0,1,0,0,0,1,0,0,1,0,1},
+	{1,0,1,1,1,0,1,0,1,0,1,1,1,1,0,1},
+	{1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1},
+	{1,0,1,1,1,0,1,0,1,1,1,0,1,1,0,1},
+	{1,0,1,0,0,0,1,1,0,0,1,0,1,1,0,1},
+	{1,0,1,0,1,0,1,1,1,1,1,0,1,1,0,1},
+	{1,0,1,0,1,0,0,0,0,0,0,0,0,0,0,1},
+	{1,0,1,1,1,0,1,0,1,0,1,1,1,1,0,1},
+	{1,0,0,0,1,0,1,0,1,0,0,0,0,1,0,1},
+	{1,0,1,1,1,0,1,1,1,1,1,1,1,1,0,1},
+	{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1},
+	{1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1}
 };
 
 struct xy {
@@ -38,7 +36,7 @@ class WiremoveDemo : public olc::PixelGameEngine
 private:
 	int direction = 3;
 	int visibility = 4;
-	float fTargetFrameTime = 1.0f / 100.0f; // Virtual FPS of 100fps
+	float fTargetFrameTime = 1.0f / 10.0f; // Virtual FPS of 10fps
 	float fAccumulatedTime = 0.0f;
 
 	olc::Sprite* sprBackground = nullptr;
@@ -69,7 +67,7 @@ private:
 
 				// Is wall open to the left?
 				// If not, draw wall
-				if (maze[block.x][block.y])
+				if (maze[lblock.x][lblock.y])
 				{
 					DrawLine(82, 19, 135, 44, olc::Pixel(olc::GREY));
 					DrawLine(135, 44, 135, 93, olc::Pixel(olc::GREY));
@@ -221,6 +219,46 @@ private:
 
 	bool HandleInput(float fElapsedTime)
 	{
+		if (GetKey(olc::Key::ESCAPE).bHeld) return false;
+
+		struct xy newpos;
+
+		if (GetKey(olc::Key::UP).bHeld)
+		{
+			newpos.x = pos.x + increment[direction].x;
+			newpos.y = pos.y + increment[direction].y;
+			if (!maze[newpos.x][newpos.y])
+			{
+				pos.x = newpos.x;
+				pos.y = newpos.y;
+			}
+		}
+		// or do we want to go backward?
+		else if (GetKey(olc::Key::DOWN).bHeld)
+		{
+			newpos.x = pos.x - increment[direction].x;
+			newpos.y = pos.y - increment[direction].y;
+			if (!maze[newpos.x][newpos.y])
+			{
+				pos.x = newpos.x;
+				pos.y = newpos.y;
+			}
+		}
+		// Do we want to turn left?
+		if (GetKey(olc::Key::LEFT).bHeld)
+		{
+			--direction;
+			if (direction < 0)
+				direction = 3;
+		}
+		// or do we want to turn right?
+		else if (GetKey(olc::Key::RIGHT).bHeld)
+		{
+			direction++;
+			if (direction > 3)
+				direction = 0;
+		}
+
 		return true;
 	}
 
@@ -233,7 +271,8 @@ public:
 public:
 	bool OnUserCreate() override
 	{
-		std::filesystem::current_path("C:/users/jacmo/source/repos/retronew/"); 
+		std::string path = moena::utils::get_homedir().append("/source/repos/retronew/");
+		std::filesystem::current_path(path); 
 
 		sprBackground = new olc::Sprite("assets/textures/background.png");
 		olc::Pixel::Mode currentPixelMode = GetPixelMode();
@@ -253,7 +292,15 @@ public:
 			fElapsedTime = fTargetFrameTime;
 			if (HandleInput(fElapsedTime))
 			{
+				Clear(olc::BLACK);
+				olc::Pixel::Mode currentPixelMode = GetPixelMode();
+				SetPixelMode(olc::Pixel::ALPHA);
+				DrawSprite(0, 0, sprBackground);
+				SetPixelMode(currentPixelMode);
 				return DrawMaze();
+			}
+			else {
+				return false;
 			}
 		}
 		else {
