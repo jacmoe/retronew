@@ -2,15 +2,15 @@
 #include "olcPixelGameEngine.h"
 
 namespace moena {
-char *utils::get_homedir(void)
-{
-	char homedir[MAX_PATH];
+	std::string utils::get_homedir(void)
+	{
+		std::string homedir = "";
 #ifdef _WIN32
-	snprintf(homedir, MAX_PATH, "%s%s", getenv("HOMEDRIVE"), getenv("HOMEPATH"));
+		homedir = std::getenv("HOMEDRIVE");
+		homedir.append(std::getenv("HOMEPATH"));
 #else
-	snprintf(homedir, MAX_PATH, "%s", getenv("HOME"));
+		homedir = std::getenv("HOME");
 #endif
-	return strdup(homedir);
+		return homedir;
+	}
 }
-}
-
