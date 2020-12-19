@@ -1,5 +1,6 @@
 #define OLC_PGE_APPLICATION
 #include "olcPixelGameEngine.h"
+#include "utils.h"
 
 char maze[16][16] = {
 	{1, 1, 1, 1,    1, 1, 1, 1,    1, 1, 1, 1,    1, 1, 1, 1},
@@ -224,9 +225,14 @@ public:
 	}
 
 public:
+
 	bool OnUserCreate() override
 	{
-		sprBackground = new olc::Sprite("../../assets/textures/background.png");
+		//char asset_dir[MAX_PATH] = "\\source\\repos\\retronew\\";
+		//std::filesystem::current_path(strcat(moena::utils::get_homedir(),asset_dir)); 
+		std::filesystem::current_path("C:/users/jacmo/source/repos/retronew/"); 
+
+		sprBackground = new olc::Sprite("assets/textures/background.png");
 		olc::Pixel::Mode currentPixelMode = GetPixelMode();
 		SetPixelMode(olc::Pixel::ALPHA);
 		DrawSprite(0, 0, sprBackground);

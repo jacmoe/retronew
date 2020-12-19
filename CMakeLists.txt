@@ -16,7 +16,9 @@ project(Retronew)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} CMakeFiles/)
 
-set(IncludeDir include/) # Change include/ to your include directory
+set(CMAKE_CXX_STANDARD 17)
+
+set(IncludeDir common/include/) # Change include/ to your include directory
 include_directories(${IncludeDir})
 
 set(THREADS_PREFER_PTHREAD_FLAD ON)
