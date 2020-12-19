@@ -18,6 +18,10 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} CMakeFiles/)
 
 set(CMAKE_CXX_STANDARD 17)
 
+if(MSVC)
+    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
+endif()
+
 set(IncludeDir common/include/) # Change include/ to your include directory
 include_directories(${IncludeDir})
 
