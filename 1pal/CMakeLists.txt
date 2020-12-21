@@ -8,10 +8,19 @@ set(Includes
     ../${IncludeDir}/olcPixelGameEngine.h
 )
 
-add_executable(${TARGET_NAME}
-    ${Sources}
-    ${Includes}
-)
+if (WIN32)
+    add_executable(${TARGET_NAME}
+        WIN32
+        ${Sources}
+        ${Includes}
+    )
+endif (WIN32)
+if (UNIX)
+    add_executable(${TARGET_NAME}
+        ${Sources}
+        ${Includes}
+    )
+endif (UNIX)
 
 target_link_libraries(${TARGET_NAME}
         Threads::Threads
