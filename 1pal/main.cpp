@@ -55,7 +55,11 @@ public:
 };
 
 
+#ifdef _WIN32
+INT WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow)
+#else
 int main()
+#endif
 {
 	PaletteDemo demo;
 	if (demo.Construct(320, 240, 4, 4))
