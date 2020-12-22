@@ -14,6 +14,8 @@ This project uses CMake and has been developed on both Windows 10 and Linux (Ubu
 ![Retronew Wireframe Maze Demo][2wire]
 ### Retronew Solid Raycast Demo
 ![Retronew Solid Raycast Demo][4ray]
+### Retronew Textured Raycast Demo
+![Retronew Textured Raycast Demo][5tex]
 
 
 [retrogardens]: https://github.com/jacmoe/retrogardens "retrogardens"
@@ -21,3 +23,4 @@ This project uses CMake and has been developed on both Windows 10 and Linux (Ubu
 [1pal]: https://github.com/jacmoe/retronew/raw/main/1pal.jpg "Retronew Palette Demo"
 [2wire]: https://github.com/jacmoe/retronew/raw/main/2wiremaze.jpg "Retronew Wireframe Maze Demo"
 [4ray]: https://github.com/jacmoe/retronew/raw/main/4raycast.jpg "Retronew Solid Raycast Demo"
+[5tex]: https://github.com/jacmoe/retronew/raw/main/5texcast.jpg "Retronew Textured Raycast Demo"
