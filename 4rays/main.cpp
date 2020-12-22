@@ -2,54 +2,50 @@
 #include "olcPixelGameEngine.h"
 #include "utils.h"
 
-const double PI = 3.141592654;
-const int IMAGE_WIDTH = 64;
-const int IMAGE_HEIGHT = 64;
-typedef char map_type[16][16];
-const int WALL_HEIGHT = 64;           // Height of wall in pixels
-const int VIEWER_DISTANCE = 128;      // Viewer distance from screen
-const int VIEWPORT_LEFT = 0;         // Dimensions of viewport
-const int VIEWPORT_RIGHT = 320;
-const int VIEWPORT_TOP = 0;
-const int VIEWPORT_BOT = 240;
-const int VIEWPORT_HEIGHT = 240;
-const int VIEWPORT_CENTER = 160;
-
-
-char maze[16][16] = {
-	{ 2, 2, 2, 2, 7, 4, 7, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-	{ 9, 2, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 2},
-	{ 9, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 2},
-	{ 9, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 2},
-	{ 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2},
-	{ 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2},
-	{ 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 0, 0, 2},
-	{ 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 2},
-	{ 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 0, 0, 2},
-	{ 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2},
-	{ 2, 2, 2, 0, 0, 0, 2, 2, 0, 2, 0, 0, 0, 0, 0, 2},
-	{ 7, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 2},
-	{ 7, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 2},
-	{ 7, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 2},
-	{ 7, 7, 7, 7, 7, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 2},
-	{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}
-};
-
-std::array<olc::Pixel, 10>pixel_colors = {olc::WHITE, olc::GREEN, olc::RED, olc::VERY_DARK_GREY,
-											olc::BLUE, olc::GREY, olc::DARK_CYAN,
-											olc::DARK_MAGENTA, olc::YELLOW, olc::DARK_RED};
-
-
-int image = 13;
-
-float viewing_angle = 0;
-int viewer_height = 32;
-int xview = 8 * 64;
-int yview = 8 * 64;
-
 class RaycasterDemo: public olc::PixelGameEngine
 {
 private:
+	const double PI = 3.141592654;
+	const int IMAGE_WIDTH = 64;
+	const int IMAGE_HEIGHT = 64;
+	typedef char map_type[16][16];
+	const int WALL_HEIGHT = 64;           // Height of wall in pixels
+	const int VIEWER_DISTANCE = 128;      // Viewer distance from screen
+	const int VIEWPORT_LEFT = 0;         // Dimensions of viewport
+	const int VIEWPORT_RIGHT = 320;
+	const int VIEWPORT_TOP = 0;
+	const int VIEWPORT_BOT = 240;
+	const int VIEWPORT_HEIGHT = 240;
+	const int VIEWPORT_CENTER = 160;
+
+	char maze[16][16] = {
+		{ 2, 2, 2, 2, 7, 4, 7, 2, 2, 2, 2, 2, 2, 2, 2, 2},
+		{ 9, 2, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 2},
+		{ 9, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 2},
+		{ 9, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 2},
+		{ 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2},
+		{ 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2},
+		{ 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 0, 0, 2},
+		{ 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 2},
+		{ 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 0, 0, 2},
+		{ 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2},
+		{ 2, 2, 2, 0, 0, 0, 2, 2, 0, 2, 0, 0, 0, 0, 0, 2},
+		{ 7, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 2},
+		{ 7, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 2},
+		{ 7, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 2},
+		{ 7, 7, 7, 7, 7, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 2},
+		{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}
+	};
+
+	std::array<olc::Pixel, 10>pixel_colors = {olc::WHITE, olc::GREEN, olc::RED, olc::VERY_DARK_GREY,
+												olc::BLUE, olc::GREY, olc::DARK_CYAN,
+												olc::DARK_MAGENTA, olc::YELLOW, olc::DARK_RED};
+
+
+	float viewing_angle = 0;
+	int viewer_height = 32;
+	int xview = 8 * 64;
+	int yview = 8 * 64;
 	float fTargetFrameTime = 1.0f / 60.0f; // Virtual FPS of 60fps
 	float fAccumulatedTime = 0.0f;
 
