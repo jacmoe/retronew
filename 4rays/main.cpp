@@ -37,12 +37,12 @@ char maze[16][16] = {
 
 std::array<olc::Pixel, 10>pixel_colors = {olc::WHITE, olc::GREEN, olc::RED, olc::VERY_DARK_GREY,
 											olc::BLUE, olc::GREY, olc::DARK_CYAN,
-											olc::YELLOW, olc::DARK_MAGENTA, olc::DARK_RED};
+											olc::DARK_MAGENTA, olc::YELLOW, olc::DARK_RED};
 
 
 int image = 13;
 
-float viewing_angle = 120;
+float viewing_angle = 0;
 int viewer_height = 32;
 int xview = 8 * 64;
 int yview = 8 * 64;
@@ -305,6 +305,7 @@ public:
 				Clear(olc::BLACK);
 				draw_maze(maze, GetDrawTarget()->GetData(), xview, yview, viewing_angle, viewer_height);
 				DrawString(10, 10, "Use the arrow keys to rotate the view.");
+				DrawString(10, 20, std::to_string(viewing_angle));
 			}
 			else {
 				return false;
@@ -326,7 +327,7 @@ int main()
 #endif
 {
 	RaycasterDemo demo;
-	if (demo.Construct(320, 240, 4, 4))
+	if (demo.Construct(320, 240, 2, 2))
 		demo.Start();
 
 	return 0;
