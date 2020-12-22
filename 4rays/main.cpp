@@ -263,7 +263,7 @@ private:
 
 		for (int i=0; i<height; i++) {
 
-		// Set wall pixels to white:
+		// Set wall pixel color:
 
 		screen[offset]= pixel_colors[wall_color];
 
