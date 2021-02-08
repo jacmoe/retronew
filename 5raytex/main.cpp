@@ -146,7 +146,7 @@ private:
             // Calculate horizontal angle of ray relative to
             //  center ray:
 
-            float column_angle=atan((float)(column-320)
+            float column_angle=atan((float)(column-((VIEWPORT_RIGHT + 1)/2))
             / VIEWER_DISTANCE);
 
             // Calculate angle of ray relative to maze coordinates
@@ -304,7 +304,7 @@ private:
             yratio=(float)WALL_HEIGHT/height;
             if (top < VIEWPORT_TOP) {
                 dheight-=(VIEWPORT_TOP - top);
-                t+=(int)((VIEWPORT_TOP-top)*yratio)*640;
+                t+=(int)((VIEWPORT_TOP-top)*yratio)*(VIEWPORT_RIGHT+1);
                 iheight -= ((VIEWPORT_TOP-top)*yratio);
                 top=VIEWPORT_TOP;
             }
@@ -316,7 +316,7 @@ private:
 
             // Point to video memory offset for top of line:
 
-            offset = top * 640 + column;
+            offset = top * (VIEWPORT_RIGHT+1) + column;
 
             // Initialize vertical error term for texture map:
 
@@ -351,7 +351,7 @@ private:
 
                     // And advance OFFSET to next screen line:
 
-                    offset+=640;
+                    offset+=(VIEWPORT_RIGHT+1);
                 }
 
                 // Incremental division:
@@ -369,7 +369,7 @@ private:
 
                 // Get ratio of viewer's height to pixel height:
 
-                float ratio=(float)viewer_height/(row-200);
+                float ratio=(float)viewer_height/(row-((VIEWPORT_BOT + 1)/2));
 
                 // Get distance to visible pixel:
 
@@ -405,7 +405,7 @@ private:
 
                 // Calculate video offset of floor pixel:
 
-                offset=row*640+column;
+                offset=row*(VIEWPORT_RIGHT+1)+column;
 
                 // Draw pixel:
 
@@ -455,7 +455,7 @@ private:
 
                 // Calculate video offset of floor pixel:
 
-                offset=row*640+column;
+                offset=row*(VIEWPORT_RIGHT+1)+column;
 
                 // Draw pixel:
 
