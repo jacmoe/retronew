@@ -48,30 +48,6 @@ public:
 		return true;
 	}
 
-	bool OnUserUpdate(double deltaTime) override
-	{
-		return true;
-	}
-
-	bool OnUserRender() override
-	{
-		return true;
-	}
-
-	bool OnUserInput() override
-	{
-		return true;
-	}
-
-	bool OnUserPostRender() override
-	{
-		return true;
-	}
-
-	bool OnUserDestroy() override
-	{
-		return true;
-	}
 };
 
 
@@ -90,9 +66,7 @@ void setup_working_directory()
 int main(int, char**)
 {
     setup_working_directory();
-	// PaletteDemo demo;
-	// if (demo.Construct(320, 240, 4, 4))
-	// 	demo.Start();
+
     PaletteDemo demo;
 
     if(demo.init("1pal"))
