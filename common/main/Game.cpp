@@ -68,10 +68,8 @@ bool Game::OnUserPostRender()
 
     average_fps = frames / al_get_time();
 
-    al_draw_textf(m_font.get(), al_color_name("blanchedalmond"), 10.0, 60.0, 0, "Deltatime : %.7f", m_delta_time);
     al_draw_textf(m_font.get(), al_color_name("blanchedalmond"), 10.0, 90.0, 0, "FPS : %.2f", m_average_fps);
-    al_draw_textf(m_font.get(), al_color_name("blanchedalmond"), 10.0, 120.0, 0, "Actual FPS : %.2f", average_fps);
-    //blanchedalmond
+
     ++frames;
 
     return true;

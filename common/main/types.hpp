@@ -15,6 +15,7 @@
 #   MIT License
 #*/
 #pragma once
+#include <vector>
 
 template <typename T>
 struct Vector2

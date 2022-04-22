@@ -1,6 +1,9 @@
+#include <allegro5/color.h>
 #include <filesystem>
+#include "main/types.hpp"
 #include "utility/utils.hpp"
 #include "main/Game.hpp"
+#include <allegro5/allegro_color.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -14,6 +17,18 @@ uint32_t c64_palette[16] = {
 #define GETG(c) (((c) >> 8) & 0xFF)
 #define GETB(c) (((c) >> 16) & 0xFF)
 
+void setup_working_directory()
+{
+    // Get executable path
+    std::string path = std::filesystem::current_path().generic_string();
+    // Remove the build directory, so that we land on appropriate directory for asset loading
+    std::vector<std::string> strList;
+    strList.push_back("/build/1pal");
+    utility::eraseSubStrings(path, strList);
+    // Set a proper working directory
+    std::filesystem::current_path(path);
+}
+
 class PaletteDemo : public Game
 {
 private:
@@ -26,42 +41,32 @@ public:
 public:
 	bool OnUserCreate() override
 	{
-		// Clear(olc::BLUE);
-		// pal_offset = (ScreenWidth() / 5) / 2;
-		// pal_width = (ScreenWidth() - (pal_offset * 2)) / 4;
-		// pal_height = (ScreenHeight() - (pal_offset * 2)) / 4;
+        Pixelator* pix = m_pixelator.get();
+        pix->fill(al_color_name("blue"));
 
-		// // Draw a palette
-		// int col = 0;
-		// int row = pal_offset;
-		// for (int buf = 0; buf < 16; buf++)
-		// {
-		// 	FillRect(pal_offset + (pal_width * col), row, pal_width, pal_height, olc::Pixel(GETR(c64_palette[buf]), GETG(c64_palette[buf]), GETB(c64_palette[buf])));
-		// 	col++;
-		// 	if (col % 4 == 0)
-		// 	{
-		// 		col = 0;
-		// 		row += pal_height;
-		// 	}
-		// }
+		pal_offset = (320 / 5) / 2;
+		pal_width = (320 - (pal_offset * 2)) / 4;
+		pal_height = (200 - (pal_offset * 2)) / 4;
+
+		// Draw a palette
+		int col = 0;
+		int row = pal_offset;
+		for (int buf = 0; buf < 16; buf++)
+		{
+            pix->drawFilledRect(IntRect(pal_offset + (pal_width * col), row, pal_width, pal_height),
+                al_map_rgb(GETR(c64_palette[buf]), GETG(c64_palette[buf]), GETB(c64_palette[buf])));
+			col++;
+			if (col % 4 == 0)
+			{
+				col = 0;
+				row += pal_height;
+			}
+		}
 
 		return true;
 	}
 
 };
-
-
-void setup_working_directory()
-{
-    // Get executable path
-    std::string path = std::filesystem::current_path().generic_string();
-    // Remove the build directory, so that we land on appropriate directory for asset loading
-    std::vector<std::string> strList;
-    strList.push_back("/build/1pal");
-    utility::eraseSubStrings(path, strList);
-    // Set a proper working directory
-    std::filesystem::current_path(path);
-}
 
 int main(int, char**)
 {
