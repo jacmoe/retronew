@@ -1,6 +1,9 @@
+#include <allegro5/bitmap_draw.h>
+#include <allegro5/bitmap_io.h>
 #include <filesystem>
 #include "main/types.hpp"
 #include "utility/utils.hpp"
+#include "utility/ImageAtlas.hpp"
 #include "main/Game.hpp"
 #include <allegro5/allegro_color.h>
 
@@ -53,7 +56,7 @@ private:
 	int direction = 3;
 	int visibility = 4;
 
-	// olc::Sprite* sprBackground = nullptr;
+	ALLEGRO_BITMAP* bitmap = nullptr;
 
 	void DrawMaze()
 	{
@@ -236,12 +239,16 @@ public:
 
 	bool OnUserCreate() override
 	{
-		// sprBackground = new olc::Sprite("assets/textures/background.png");
-		// olc::Pixel::Mode currentPixelMode = GetPixelMode();
-		// SetPixelMode(olc::Pixel::ALPHA);
-		// DrawSprite(0, 0, sprBackground);
-		// SetPixelMode(currentPixelMode);
+        Pixelator* pix = m_pixelator.get();
+
+	    utility::ImageAtlas atlas;
+
+		atlas.load("assets/textures/background.png", Vector2i(320, 240));
+
+		pix->copy(atlas.getPixels(0), atlas.getTileSize(), 0, 0, IntRect(0, 0, atlas.getTileSize().x, atlas.getTileSize().y));
+
 		DrawMaze();
+
 		return true;
 	}
 
