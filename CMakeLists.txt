@@ -35,7 +35,7 @@ include_directories(
 )
 
 add_subdirectory(1pal)
-#add_subdirectory(2maze)
+add_subdirectory(2maze)
 #add_subdirectory(3move)
 #add_subdirectory(4rays)
 #add_subdirectory(5raytex)

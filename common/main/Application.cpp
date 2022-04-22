@@ -59,11 +59,11 @@ bool Application::init(std::string name)
 
     SPDLOG_INFO("Allegro {} initialized.", ALLEGRO_VERSION_STR);
 
-    std::string str_config = "assets/config/" + name + ".ini";
+    std::string str_config = "assets/config/" + m_name + ".ini";
     m_config.reset(al_load_config_file(str_config.c_str()));
     if (!m_config.get())
     {
-        SPDLOG_ERROR("Couldn't load configuration");
+        SPDLOG_ERROR("Couldn't load " + str_config + " configuration");
         return false;
     }
 
