@@ -1,3 +1,19 @@
+/*# This file is part of the
+# ______     _
+# | ___ \   | |
+# | |_/ /___| |_ _ __ ___  _ __   _____      __
+# |    // _ \ __| '__/ _ \| '_ \ / _ \ \ /\ / /
+# | |\ \  __/ |_| | | (_) | | | |  __/\ V  V /
+# \_| \_\___|\__|_|  \___/|_| |_|\___| \_/\_/
+#
+#   project
+#
+#   https://github.com/jacmoe/retronew
+#
+#   (c) 2020 - 2022 Jacob Moena
+#
+#   MIT License
+#*/
 #include <allegro5/bitmap_draw.h>
 #include <allegro5/bitmap_io.h>
 #include <filesystem>
