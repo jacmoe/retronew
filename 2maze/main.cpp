@@ -72,8 +72,6 @@ private:
 	int direction = 3;
 	int visibility = 4;
 
-	ALLEGRO_BITMAP* bitmap = nullptr;
-
 	void DrawMaze()
 	{
 		struct xy block, lblock, rblock;
