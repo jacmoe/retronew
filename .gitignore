@@ -41,3 +41,4 @@ test_package/build
 # Debug files
 *.dSYM/
 *.su
+/.cache/
