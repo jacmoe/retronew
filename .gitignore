@@ -42,3 +42,4 @@ test_package/build
 *.dSYM/
 *.su
 /.cache/
+/log/

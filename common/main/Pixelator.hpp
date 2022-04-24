@@ -75,6 +75,10 @@ public:
 
     uint8_t* getPixelsPtrDirect();
 
+    uint32_t RGBAToInt(uint8_t r, uint8_t g, uint8_t b, uint8_t a);
+    uint32_t ColorToInt(const ALLEGRO_COLOR& color);
+    ALLEGRO_COLOR IntToColor(uint32_t color);
+
     // copy pixels from a source
     void copy(const std::string name, unsigned int x = 0, unsigned int y = 0, bool applyAlpha = true);
     void copy(const std::string name, unsigned int destX, unsigned int destY, const IntRect& sourceRect, bool applyAlpha = true);

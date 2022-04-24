@@ -16,6 +16,8 @@
 #*/
 #include "main/Pixelator.hpp"
 #include "spdlog/spdlog.h"
+#include <allegro5/color.h>
+#include <cstdint>
 
 Pixelator::Pixelator()
     : m_current_buffer("primary")
@@ -131,6 +133,28 @@ void Pixelator::setSize(const std::string& name, const Vector2i size)
     // Commit the new pixel buffer
     m_buffers[index].pixels.swap(newPixels);
     m_buffers[index].size = size;
+}
+
+uint32_t Pixelator::RGBAToInt(uint8_t r, uint8_t g, uint8_t b, uint8_t a)
+{
+    return ((uint32_t)r << 3*8 | (uint32_t)g << 2*8 | (uint32_t)b << 8 | (uint32_t)a);
+}
+
+uint32_t Pixelator::ColorToInt(const ALLEGRO_COLOR& color)
+{
+    uint8_t r, g, b, a;
+    al_unmap_rgba(color, &r, &g, &b, &a);
+    return RGBAToInt(r, g, b, a);
+}
+
+ALLEGRO_COLOR Pixelator::IntToColor(uint32_t color)
+{
+    uint8_t r = (uint8_t)(color >> 3*8);
+    uint8_t g = (uint8_t)((color >> 2*8) & 0xFF);
+    uint8_t b = (uint8_t)((color >> 8) & 0xFF);
+    uint8_t a = (uint8_t)(color & 0xFF);
+    ALLEGRO_COLOR newColor = al_map_rgba(r, g, b, a);
+    return newColor;
 }
 
 void Pixelator::setPixel(const std::string& name, unsigned int x, unsigned int y, const ALLEGRO_COLOR& color)
