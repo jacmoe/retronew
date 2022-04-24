@@ -17,6 +17,7 @@
 #pragma once
 
 #include <allegro5/allegro5.h>
+#include <cstdint>
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -71,6 +72,8 @@ public:
     unsigned int getNumberOfBuffers() const { return static_cast<unsigned int>(m_buffers.size()); }
 
     bool swapBuffer(const std::string name);
+
+    uint8_t* getPixelsPtrDirect();
 
     // copy pixels from a source
     void copy(const std::string name, unsigned int x = 0, unsigned int y = 0, bool applyAlpha = true);

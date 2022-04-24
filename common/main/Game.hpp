@@ -33,6 +33,5 @@ protected:
     bool OnUserInput() override;
     bool OnUserDestroy() override;
 
-private:
     double m_delta_time;
 };

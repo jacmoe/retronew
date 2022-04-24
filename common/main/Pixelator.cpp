@@ -316,6 +316,20 @@ const uint8_t* Pixelator::getPixelsPtr(const std::string& name) const
     }
 }
 
+uint8_t* Pixelator::getPixelsPtrDirect()
+{
+    unsigned int index = m_buffer_map.at(m_current_buffer);
+    if (!m_buffers[index].pixels.empty())
+    {
+        return &m_buffers[index].pixels[0];
+    }
+    else
+    {
+        SPDLOG_ERROR("Trying to access the pixels of an empty image");
+        return NULL;
+    }
+}
+
 void Pixelator::fill(const std::string& name, ALLEGRO_COLOR color)
 {
     unsigned int index = m_buffer_map.at(name);

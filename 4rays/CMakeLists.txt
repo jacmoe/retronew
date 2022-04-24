@@ -14,7 +14,7 @@
 #
 #   MIT License
 #
-set(TARGET_NAME 1pal)
+set(TARGET_NAME 4rays)
 
 set(main
     ../common/main/Application.cpp
@@ -42,5 +42,4 @@ add_executable(${TARGET_NAME}
     ${utility}
 )
 
-target_link_libraries(1pal ${ALLEGRO_LIBRARIES})
-
+target_link_libraries(4rays ${ALLEGRO_LIBRARIES})
