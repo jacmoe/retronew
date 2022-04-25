@@ -58,95 +58,95 @@ void setup_logging()
         std::remove(logfile_name.c_str());
     }
 
-	// Create console sink and file sink
+  // Create console sink and file sink
     auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
-	auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(logfile_name, true);
-	spdlog::sinks_init_list sink_list = { file_sink, console_sink };
-	// Make the logger use both the console and the file sink
+  auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(logfile_name, true);
+  spdlog::sinks_init_list sink_list = { file_sink, console_sink };
+  // Make the logger use both the console and the file sink
     m_pxllogger = std::make_shared<spdlog::logger>("multi_sink", spdlog::sinks_init_list({console_sink, file_sink}));
-	// Set the standard logger so that we can use it freely everywhere
+  // Set the standard logger so that we can use it freely everywhere
     spdlog::set_default_logger(m_pxllogger);
-	// Set the format pattern - [Loglevel] [Function] [Line] message
-	spdlog::set_pattern("[%l] [%!] [line %#] %v");
+  // Set the format pattern - [Loglevel] [Function] [Line] message
+  spdlog::set_pattern("[%l] [%!] [line %#] %v");
 }
 
 class RaycasterDemo: public Game
 {
 private:
-	const double PI = 3.141592654;
-	const int IMAGE_WIDTH = 64;
-	const int IMAGE_HEIGHT = 64;
-	typedef char map_type[16][16];
-	const int WALL_HEIGHT = 64;           // Height of wall in pixels
-	const int VIEWER_DISTANCE = 128;      // Viewer distance from screen
-	const int VIEWPORT_LEFT = 40;         // Dimensions of viewport
-	const int VIEWPORT_RIGHT = 280;
-	const int VIEWPORT_TOP = 50;
-	const int VIEWPORT_BOT = 150;
-	const int VIEWPORT_HEIGHT = 100;
-	const int VIEWPORT_CENTER = 100;
+  const double PI = 3.141592654;
+  const int IMAGE_WIDTH = 64;
+  const int IMAGE_HEIGHT = 64;
+  typedef char map_type[16][16];
+  const int WALL_HEIGHT = 64;           // Height of wall in pixels
+  const int VIEWER_DISTANCE = 128;      // Viewer distance from screen
+  const int VIEWPORT_LEFT = 40;         // Dimensions of viewport
+  const int VIEWPORT_RIGHT = 280;
+  const int VIEWPORT_TOP = 50;
+  const int VIEWPORT_BOT = 150;
+  const int VIEWPORT_HEIGHT = 100;
+  const int VIEWPORT_CENTER = 100;
 
-	char maze[16][16] = {
-		{ 2, 2, 2, 2, 7, 4, 7, 2, 2, 2, 2, 2, 2, 2, 2, 2},
-		{ 9, 2, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 2},
-		{ 9, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 2},
-		{ 9, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 2},
-		{ 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2},
-		{ 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2},
-		{ 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 0, 0, 2},
-		{ 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 2},
-		{ 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 0, 0, 2},
-		{ 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2},
-		{ 2, 2, 2, 0, 0, 0, 2, 2, 0, 2, 0, 0, 0, 0, 0, 2},
-		{ 7, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 2},
-		{ 7, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 2},
-		{ 7, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 2},
-		{ 7, 7, 7, 7, 7, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 2},
-		{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}
-	};
+  char maze[16][16] = {
+    { 2, 2, 2, 2, 7, 4, 7, 2, 2, 2, 2, 2, 2, 2, 2, 2},
+    { 9, 2, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 2},
+    { 9, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 2},
+    { 9, 0, 0, 0, 0, 0, 0, 0, 0, 6, 0, 0, 0, 0, 0, 2},
+    { 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2},
+    { 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2},
+    { 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 0, 0, 2},
+    { 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 2},
+    { 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 9, 9, 0, 0, 2},
+    { 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 0, 0, 0, 2},
+    { 2, 2, 2, 0, 0, 0, 2, 2, 0, 2, 0, 0, 0, 0, 0, 2},
+    { 7, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 2},
+    { 7, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 2},
+    { 7, 0, 0, 0, 0, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 2},
+    { 7, 7, 7, 7, 7, 0, 0, 2, 0, 2, 0, 0, 0, 0, 0, 2},
+    { 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2}
+  };
 
-	std::array<std::string, 10>pixel_colors = {"blue", "green", "red", "maroon",
-												"blue", "grey", "cyan",
-												"magenta", "yellow", "darkgoldenrod"};
+  std::array<std::string, 10>pixel_colors = {"blue", "green", "red", "maroon",
+                        "blue", "grey", "cyan",
+                        "magenta", "yellow", "darkgoldenrod"};
 
-	float viewing_angle = 64;
-	int viewer_height = 32;
-	int xview = 8 * 64;
-	int yview = 8 * 64;
+  float viewing_angle = 64;
+  int viewer_height = 32;
+  int xview = 8 * 64;
+  int yview = 8 * 64;
 
-	bool OnUserInput() override
-	{
-	    if (al_key_down(&m_keyboard_state, ALLEGRO_KEY_UP))
-		{
-		}
-		// or do we want to go backward?
-	    else if (al_key_down(&m_keyboard_state, ALLEGRO_KEY_DOWN))
-		{
-		}
-		// Do we want to turn left?
-	    if (al_key_down(&m_keyboard_state, ALLEGRO_KEY_LEFT))
-		{
-			viewing_angle -= m_delta_time * 0.6f;
-		}
-		// or do we want to turn right?
-	    else if (al_key_down(&m_keyboard_state, ALLEGRO_KEY_RIGHT))
-		{
-			viewing_angle += m_delta_time * 0.6f;
-		}
+  bool OnUserInput() override
+  {
+      if (al_key_down(&m_keyboard_state, ALLEGRO_KEY_UP))
+    {
+    }
+    // or do we want to go backward?
+      else if (al_key_down(&m_keyboard_state, ALLEGRO_KEY_DOWN))
+    {
+    }
+    // Do we want to turn left?
+      if (al_key_down(&m_keyboard_state, ALLEGRO_KEY_LEFT))
+    {
+      viewing_angle -= m_delta_time * 0.6f;
+    }
+    // or do we want to turn right?
+      else if (al_key_down(&m_keyboard_state, ALLEGRO_KEY_RIGHT))
+    {
+      viewing_angle += m_delta_time * 0.6f;
+    }
 
-		return true;
-	}
+    return true;
+  }
 
-	void draw_maze(map_type map,uint8_t* screen,int xview,
-					int yview,float viewing_angle,
-					int viewer_height)
+  void draw_maze(map_type map,uint8_t* screen,int xview,
+          int yview,float viewing_angle,
+          int viewer_height)
 
-	// Draws a raycast image in the viewport of the maze represented
-	// in array MAP[], as seen from position XVIEW, YVIEW by a
-	// viewer looking at angle VIEWING_ANGLE where angle 0 is due
-	// north. (Angles are measured in radians.)
+  // Draws a raycast image in the viewport of the maze represented
+  // in array MAP[], as seen from position XVIEW, YVIEW by a
+  // viewer looking at angle VIEWING_ANGLE where angle 0 is due
+  // north. (Angles are measured in radians.)
 
-	{
+  {
   // Variable declarations:
 
   int sy,offset;       // Pixel y position and offset
@@ -267,7 +267,7 @@ private:
 
         if (map[xmaze][ymaze])
         {
-        	color = map[xmaze][ymaze];
+          color = map[xmaze][ymaze];
           break;
         }
       }
@@ -287,7 +287,7 @@ private:
 
         if (map[xmaze][ymaze])
         {
-        	color = map[xmaze][ymaze];
+          color = map[xmaze][ymaze];
           break;
         }
       }
@@ -339,17 +339,17 @@ private:
     }
   }
   done = true;
-	}
+  }
 
 public:
 
-    bool OnUserRender() override
-	{
-	    Pixelator* pix = m_pixelator.get();
-		pix->fill(al_color_name("black"));
-		draw_maze(maze, pix->getPixelsPtrDirect(), xview, yview, viewing_angle, viewer_height);
-		return true;
-	}
+  bool OnUserRender() override
+  {
+      Pixelator* pix = m_pixelator.get();
+      pix->fill(al_color_name("black"));
+      draw_maze(maze, pix->getPixelsPtrDirect(), xview, yview, viewing_angle, viewer_height);
+      return true;
+  }
 };
 
 int main(int, char**)
@@ -360,7 +360,7 @@ int main(int, char**)
     RaycasterDemo demo;
 
     if(demo.init("4rays"))
-	    demo.run();
+      demo.run();
 
     return 0;
 }

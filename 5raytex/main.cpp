@@ -14,11 +14,63 @@
 #
 #   MIT License
 #*/
-#define OLC_PGE_APPLICATION
-#include "olcPixelGameEngine.h"
-#include "utils.h"
+#include <allegro5/bitmap_draw.h>
+#include <allegro5/bitmap_io.h>
+#include <allegro5/keycodes.h>
+#include <cstdint>
+#include <filesystem>
+#include "main/types.hpp"
+#include "spdlog/spdlog.h"
+#include "utility/utils.hpp"
+#include "utility/ImageAtlas.hpp"
+#include "main/Game.hpp"
+#include <allegro5/allegro_color.h>
+#include <string>
 
-class TexturedRaycasterDemo: public olc::PixelGameEngine
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/basic_file_sink.h"
+#include "spdlog/sinks/stdout_color_sinks.h"
+
+void setup_working_directory()
+{
+    // Get executable path
+    std::string path = std::filesystem::current_path().generic_string();
+    // Remove the build directory, so that we land on appropriate directory for asset loading
+    std::vector<std::string> strList;
+    strList.push_back("/build/5raytex");
+    utility::eraseSubStrings(path, strList);
+    // Set a proper working directory
+    std::filesystem::current_path(path);
+}
+
+void setup_logging()
+{
+    std::shared_ptr<spdlog::logger> m_pxllogger;
+
+    std::string logfile_name = "log/pxllog.txt";
+
+    // Remove old log file
+    if(std::filesystem::exists(logfile_name))
+    {
+        std::remove(logfile_name.c_str());
+    }
+
+	// Create console sink and file sink
+    auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
+	auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(logfile_name, true);
+	spdlog::sinks_init_list sink_list = { file_sink, console_sink };
+	// Make the logger use both the console and the file sink
+    m_pxllogger = std::make_shared<spdlog::logger>("multi_sink", spdlog::sinks_init_list({console_sink, file_sink}));
+	// Set the standard logger so that we can use it freely everywhere
+    spdlog::set_default_logger(m_pxllogger);
+	// Set the format pattern - [Loglevel] [Function] [Line] message
+	spdlog::set_pattern("[%l] [%!] [line %#] %v");
+}
+
+class TexturedRaycasterDemo: public Game
 {
 private:
     const double PI = 3.141592654;
@@ -92,12 +144,7 @@ private:
     { 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9}
     };
 
-    olc::Sprite* sprTextures = nullptr;
-
-    std::array<olc::Pixel, 10>pixel_colors = {olc::WHITE, olc::GREEN, olc::RED, olc::VERY_DARK_GREY,
-                                                olc::BLUE, olc::GREY, olc::DARK_CYAN,
-                                                olc::DARK_MAGENTA, olc::YELLOW, olc::DARK_RED};
-
+    // olc::Sprite* sprTextures = nullptr;
 
     float viewing_angle=0;
     int viewer_height=32;
@@ -106,35 +153,30 @@ private:
     float fTargetFrameTime = 1.0f / 60.0f; // Virtual FPS of 60fps
     float fAccumulatedTime = 0.0f;
 
-    bool HandleInput(float fElapsedTime)
+  bool OnUserInput() override
+  {
+      if (al_key_down(&m_keyboard_state, ALLEGRO_KEY_UP))
     {
-        if (GetKey(olc::Key::ESCAPE).bHeld) return false;
-
-        if (GetKey(olc::Key::UP).bHeld)
-        {
-        }
-        // or do we want to go backward?
-        else if (GetKey(olc::Key::DOWN).bHeld)
-        {
-        }
-        // Do we want to turn left?
-        if (GetKey(olc::Key::LEFT).bHeld)
-        {
-            viewing_angle -= fElapsedTime * 0.6f;
-        }
-        // or do we want to turn right?
-        else if (GetKey(olc::Key::RIGHT).bHeld)
-        {
-            viewing_angle += fElapsedTime * 0.6f;
-        }
-
-        return true;
+    }
+    // or do we want to go backward?
+      else if (al_key_down(&m_keyboard_state, ALLEGRO_KEY_DOWN))
+    {
+    }
+    // Do we want to turn left?
+      if (al_key_down(&m_keyboard_state, ALLEGRO_KEY_LEFT))
+    {
+      viewing_angle -= m_delta_time * 0.6f;
+    }
+    // or do we want to turn right?
+      else if (al_key_down(&m_keyboard_state, ALLEGRO_KEY_RIGHT))
+    {
+      viewing_angle += m_delta_time * 0.6f;
     }
 
-    void draw_maze(map_type map,map_type floor,map_type ceiling,
-        olc::Pixel *screen,int xview,int yview,
-        float viewing_angle,int viewer_height,
-        olc::Pixel *textmaps)
+    return true;
+  }
+
+    void draw_maze(map_type map)
 
     // Draws a raycast image in the viewport of the maze represented
     // in array MAP[], as seen from position XVIEW, YVIEW by a
@@ -359,7 +401,7 @@ private:
 
                     // If so, draw it:
 
-                    screen[offset]=textmaps[tileptr];
+                    // screen[offset]=textmaps[tileptr];
 
                     // Reset error term:
 
@@ -425,7 +467,7 @@ private:
 
                 // Draw pixel:
 
-                screen[offset]=textmaps[tileptr];
+                // screen[offset]=textmaps[tileptr];
             } // Step through floor pixels
 
             // Step through ceiling pixels:
@@ -475,63 +517,39 @@ private:
 
                 // Draw pixel:
 
-                screen[offset]=textmaps[tileptr];
+                // screen[offset]=textmaps[tileptr];
             } //*/// Step through ceiling pixels
 
         } // Loop through all columns of pixels in viewport
     }
-public:
-    TexturedRaycasterDemo()
-    {
-        sAppName = "Raycaster";
-    }
 
 public:
+
     bool OnUserCreate() override
     {
-        std::string path = moena::utils::get_homedir().append("/source/repos/retronew/");
-        std::filesystem::current_path(path); 
-        sprTextures = new olc::Sprite("assets/textures/walls.png");
+        // sprTextures = new olc::Sprite("assets/textures/walls.png");
 
         return true;
     }
 
-    bool OnUserUpdate(float fElapsedTime) override
+    bool OnUserRender() override
     {
-        fAccumulatedTime += fElapsedTime;
-        if (fAccumulatedTime >= fTargetFrameTime)
-        {
-            fAccumulatedTime -= fTargetFrameTime;
-            fElapsedTime = fTargetFrameTime;
-            if (HandleInput(fElapsedTime))
-            {
-                Clear(olc::BLACK);
-                draw_maze(walls, floor, ceiling, GetDrawTarget()->GetData(), xview, yview, viewing_angle, viewer_height, sprTextures->GetData());
-                DrawString(10, 10, "Use the arrow keys to rotate the view.");
-                DrawString(10, 20, std::to_string(viewing_angle));
-            }
-            else {
-                return false;
-            }
-        }
-        else {
-            return true;
-        }
-        // we should never be here
+        Pixelator* pix = m_pixelator.get();
+        pix->fill(al_color_name("black"));
+        draw_maze(walls);
         return true;
     }
 };
 
-
-#ifdef _WIN32
-INT WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, INT nCmdShow)
-#else
-int main()
-#endif
+int main(int, char**)
 {
+    setup_working_directory();
+    setup_logging();
+
     TexturedRaycasterDemo demo;
-    if (demo.Construct(640, 480, 2, 2))
-        demo.Start();
+
+    if(demo.init("5raytex"))
+      demo.run();
 
     return 0;
 }
