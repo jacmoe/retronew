@@ -81,9 +81,9 @@ private:
     const int WALL_HEIGHT = 64;           // Height of wall in pixels
     const int VIEWER_DISTANCE = 192;      // Viewer distance from screen
     const int VIEWPORT_LEFT = 0;         // Dimensions of viewport
-    const int VIEWPORT_RIGHT = 639;
+    const int VIEWPORT_RIGHT = 319;
     const int VIEWPORT_TOP = 0;
-    const int VIEWPORT_BOT = 399;
+    const int VIEWPORT_BOT = 199;
     const int VIEWPORT_HEIGHT = VIEWPORT_BOT-VIEWPORT_TOP;
     const int VIEWPORT_CENTER = VIEWPORT_TOP+VIEWPORT_HEIGHT/2;
 
@@ -165,12 +165,12 @@ private:
     // Do we want to turn left?
       if (al_key_down(&m_keyboard_state, ALLEGRO_KEY_LEFT))
     {
-      viewing_angle -= m_delta_time * 0.6f;
+      viewing_angle -= m_delta_time * 0.9f;
     }
     // or do we want to turn right?
       else if (al_key_down(&m_keyboard_state, ALLEGRO_KEY_RIGHT))
     {
-      viewing_angle += m_delta_time * 0.6f;
+      viewing_angle += m_delta_time * 0.9f;
     }
 
     return true;
@@ -196,6 +196,8 @@ private:
         int distance;  // Distance to wall along ray
         int tmcolumn;        // Column in texture map
         float yratio;
+
+        static bool done = false;
 
         // Loop through all columns of pixels in viewport:
 
@@ -401,6 +403,12 @@ private:
 
                     // If so, draw it:
 
+                    if(!done)
+                    {
+                        SPDLOG_INFO("offset = {}", offset/VIEWPORT_RIGHT);
+                        SPDLOG_INFO("top+h = {}, column = {}", top+h, column);
+                    }
+                    m_pixelator.get()->setPixel(column, offset/(VIEWPORT_RIGHT+1), al_color_name("blue"));
                     // screen[offset]=textmaps[tileptr];
 
                     // Reset error term:
@@ -467,6 +475,7 @@ private:
 
                 // Draw pixel:
 
+                m_pixelator.get()->setPixel(column, offset/(VIEWPORT_RIGHT+1), al_color_name("grey"));
                 // screen[offset]=textmaps[tileptr];
             } // Step through floor pixels
 
@@ -517,10 +526,12 @@ private:
 
                 // Draw pixel:
 
+                m_pixelator.get()->setPixel(column, offset/(VIEWPORT_RIGHT+1), al_color_name("darkslategrey"));
                 // screen[offset]=textmaps[tileptr];
             } //*/// Step through ceiling pixels
 
         } // Loop through all columns of pixels in viewport
+        done = true;
     }
 
 public:
