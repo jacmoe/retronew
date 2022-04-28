@@ -16,6 +16,7 @@
 #*/
 #include <allegro5/bitmap_draw.h>
 #include <allegro5/bitmap_io.h>
+#include <allegro5/color.h>
 #include <allegro5/keycodes.h>
 #include <cstdint>
 #include <filesystem>
@@ -26,6 +27,7 @@
 #include "main/Game.hpp"
 #include <allegro5/allegro_color.h>
 #include <string>
+#include <memory>
 
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
@@ -144,14 +146,13 @@ private:
     { 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9}
     };
 
-    // olc::Sprite* sprTextures = nullptr;
+    uint32_t* pixels;
+    uint32_t* textmaps;
 
     float viewing_angle=0;
     int viewer_height=32;
     int xview=7*64+32;
     int yview=8*64+32;
-    float fTargetFrameTime = 1.0f / 60.0f; // Virtual FPS of 60fps
-    float fAccumulatedTime = 0.0f;
 
   bool OnUserInput() override
   {
@@ -196,8 +197,6 @@ private:
         int distance;  // Distance to wall along ray
         int tmcolumn;        // Column in texture map
         float yratio;
-
-        static bool done = false;
 
         // Loop through all columns of pixels in viewport:
 
@@ -403,13 +402,8 @@ private:
 
                     // If so, draw it:
 
-                    if(!done)
-                    {
-                        SPDLOG_INFO("offset = {}", offset/VIEWPORT_RIGHT);
-                        SPDLOG_INFO("top+h = {}, column = {}", top+h, column);
-                    }
-                    m_pixelator.get()->setPixel(column, offset/(VIEWPORT_RIGHT+1), al_color_name("blue"));
-                    // screen[offset]=textmaps[tileptr];
+                    // m_pixelator.get()->setPixel(column, offset/(VIEWPORT_RIGHT+1), atlas.getPixel(tile-1, x, y));
+                    pixels[offset]=textmaps[tileptr];
 
                     // Reset error term:
 
@@ -475,7 +469,8 @@ private:
 
                 // Draw pixel:
 
-                m_pixelator.get()->setPixel(column, offset/(VIEWPORT_RIGHT+1), al_color_name("grey"));
+                pixels[offset]=textmaps[tileptr];
+                // m_pixelator.get()->setPixel(column, offset/(VIEWPORT_RIGHT+1), atlas.getPixel(tile-1, x, y));
                 // screen[offset]=textmaps[tileptr];
             } // Step through floor pixels
 
@@ -526,28 +521,75 @@ private:
 
                 // Draw pixel:
 
-                m_pixelator.get()->setPixel(column, offset/(VIEWPORT_RIGHT+1), al_color_name("darkslategrey"));
+                pixels[offset]=textmaps[tileptr];
+                // m_pixelator.get()->setPixel(column, offset/(VIEWPORT_RIGHT+1), atlas.getPixel(tile-1, x, y));
                 // screen[offset]=textmaps[tileptr];
             } //*/// Step through ceiling pixels
 
         } // Loop through all columns of pixels in viewport
-        done = true;
     }
+
+void initRayTexture(const std::string& path, int tile_width, int tile_height, int num_tiles)
+{
+    int32_t mPixWidth;
+    int32_t mPixHeight;
+    uint8_t* rgbaData = stbi_load(path.c_str(), &mPixWidth, &mPixHeight, NULL, 4);
+    if (!rgbaData)
+    {
+        SPDLOG_ERROR("Could not load texture '{}'", path);
+        return;
+    }
+
+    free(textmaps);
+    textmaps = (uint32_t *)rgbaData;
+}
+
+#define GETR(c) (((c) >> 0) & 0xFF)
+#define GETG(c) (((c) >> 8) & 0xFF)
+#define GETB(c) (((c) >> 16) & 0xFF)
+    void plotPixels()
+        {
+            int pix = 0;
+            ALLEGRO_COLOR color;
+            for(int y = 0; y < 200; y++)
+            {
+                for(int x = 0; x < 320; x++)
+                {
+                    uint8_t red = GETR(pixels[pix]);
+                    uint8_t green = GETG(pixels[pix]);
+                    uint8_t blue = GETB(pixels[pix]);
+                    uint8_t alpha = 255;
+                    color = al_map_rgba(red, green, blue, alpha);
+                    m_pixelator.get()->setPixel(x, y, color);
+                    pix++;
+                }
+            }
+        }
 
 public:
 
     bool OnUserCreate() override
     {
-        // sprTextures = new olc::Sprite("assets/textures/walls.png");
+        pixels = (uint32_t*)malloc(sizeof(uint32_t) * 320 * 200);
+        memset(pixels, 0, sizeof(uint32_t) * 320 * 200);
+        textmaps = (uint32_t*)malloc(sizeof(uint32_t) * 320 * 200);
+        initRayTexture("assets/textures/walls.png", 64, 64, 15);
+        return true;
+    }
 
+    bool OnUserDestroy() override
+    {
+        free(pixels);
+        free(textmaps);
         return true;
     }
 
     bool OnUserRender() override
     {
         Pixelator* pix = m_pixelator.get();
-        pix->fill(al_color_name("black"));
+        // pix->fill(al_color_name("black"));
         draw_maze(walls);
+        plotPixels();
         return true;
     }
 };
