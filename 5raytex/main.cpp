@@ -160,22 +160,29 @@ private:
 
   bool OnUserInput() override
   {
-      if (al_key_down(&m_keyboard_state, ALLEGRO_KEY_UP))
+	double walkspeed = m_delta_time * 200;
+	double turnspeed = m_delta_time * 4;
+
+    if (al_key_down(&m_keyboard_state, ALLEGRO_KEY_UP))
     {
+		xview -= sin(viewing_angle) * walkspeed;
+		yview += cos(viewing_angle) * walkspeed;
     }
     // or do we want to go backward?
-      else if (al_key_down(&m_keyboard_state, ALLEGRO_KEY_DOWN))
+    else if (al_key_down(&m_keyboard_state, ALLEGRO_KEY_DOWN))
     {
+		xview += sin(viewing_angle) * walkspeed;
+		yview -= cos(viewing_angle) * walkspeed;
     }
     // Do we want to turn left?
-      if (al_key_down(&m_keyboard_state, ALLEGRO_KEY_LEFT))
+    if (al_key_down(&m_keyboard_state, ALLEGRO_KEY_LEFT))
     {
-      viewing_angle -= m_delta_time * 0.9f;
+        viewing_angle -= turnspeed;
     }
     // or do we want to turn right?
-      else if (al_key_down(&m_keyboard_state, ALLEGRO_KEY_RIGHT))
+    else if (al_key_down(&m_keyboard_state, ALLEGRO_KEY_RIGHT))
     {
-      viewing_angle += m_delta_time * 0.9f;
+        viewing_angle += turnspeed;
     }
 
     return true;
