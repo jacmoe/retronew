@@ -27,8 +27,6 @@ set(main
 )
 
 set(utility
-    ../common/utility/dbg_console.cpp
-    ../common/utility/dbg_console.hpp
     ../common/utility/ImageAtlas.cpp
     ../common/utility/ImageAtlas.hpp
     ../common/utility/ALDeleter.hpp

@@ -14,7 +14,7 @@
 #
 #   MIT License
 #
-set(TARGET_NAME 4rays)
+set(TARGET_NAME 6raylit)
 
 set(main
     ../common/main/Application.cpp
@@ -40,4 +40,4 @@ add_executable(${TARGET_NAME}
     ${utility}
 )
 
-target_link_libraries(4rays ${ALLEGRO_LIBRARIES})
+target_link_libraries(6raylit ${ALLEGRO_LIBRARIES})
